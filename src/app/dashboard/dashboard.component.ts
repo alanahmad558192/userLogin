@@ -7,6 +7,7 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule],
   template: `
     <div class="dashboard-container">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
       <h1>Welcome to User Management</h1>
       <p>Click the link below to access the User Management Application</p>
       <a href="https://github.com/alanahmad558192/AppUserManagement.git" target="_blank" class="btn btn-primary">
