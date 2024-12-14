@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router } from '@angular/router'; // Import Router
-import { LoginService } from '../services/login.service';
+import { Router } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -21,9 +21,14 @@ export class LoginComponent {
 
   constructor(
     private fb: FormBuilder,
-    private loginService: LoginService,
-    private router: Router // Inject Router
+    private authService: AuthService,
+    private router: Router
   ) {
+    // Redirect if already logged in
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/dashboard']);
+    }
+
     this.loginForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required]
@@ -33,20 +38,14 @@ export class LoginComponent {
   onSubmit() {
     if (this.loginForm.valid) {
       const { email, password } = this.loginForm.value;
-      this.loginService.login(email, password).subscribe({
+      this.authService.login(email, password).subscribe({
         next: (response) => {
           console.log('Login successful', response);
-
-          // Store token or user info in localStorage if needed
           localStorage.setItem('authToken', response.token);
-
-          // Navigate to a new route after successful login
-          this.router.navigate(['/dashboard']); // or whatever route you want
+          this.router.navigate(['/dashboard']);
         },
         error: (error) => {
           console.error('Login error', error);
-
-          // Customize error message
           if (error.status === 400) {
             this.errorMessage = 'Your email or password is incorrect';
           } else {
