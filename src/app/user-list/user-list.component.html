@@ -1,0 +1,172 @@
+<div class="container-fluid">
+  <div class="row">
+    <!-- User List Section -->
+    <div class="col-md-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h3>User List</h3>
+          <button
+            class="btn btn-primary"
+            (click)="openAddUserModal()"
+          >
+            <i class="fas fa-plus"></i> Add New User
+          </button>
+        </div>
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table table-striped table-hover mb-0">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>First Name</th>
+                  <th>Last Name</th>
+                  <th>Email</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let user of users">
+                  <td>{{ user.id }}</td>
+                  <td>{{ user.firstName }}</td>
+                  <td>{{ user.lastName }}</td>
+                  <td>{{ user.email }}</td>
+                  <td>
+                    <button
+                      class="btn btn-sm btn-outline-primary me-2"
+                      (click)="editUser(user)"
+                    >
+                      <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button
+                      class="btn btn-sm btn-outline-danger"
+                      (click)="deleteUser(user.id!)"
+                    >
+                      <i class="fas fa-trash"></i> Delete
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit User Modal -->
+<div class="modal" [class.show]="isModalOpen" [style.display]="isModalOpen ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">
+          <i class="fas fa-user"></i>
+          {{ isEditing ? 'Edit User' : 'Add New User' }}
+        </h5>
+        <button
+          type="button"
+          class="btn-close"
+          (click)="closeModal()"
+          aria-label="Close"
+        ></button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
+          <div class="row">
+            <!-- First Name -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">First Name</label>
+              <input
+                type="text"
+                formControlName="firstName"
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && userForm.get('firstName')?.errors}"
+              >
+              <div *ngIf="submitted && userForm.get('firstName')?.errors" class="invalid-feedback">
+                <div *ngIf="userForm.get('firstName')?.errors?.['required']">First Name is required</div>
+              </div>
+            </div>
+
+            <!-- Last Name -->
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Last Name</label>
+              <input
+                type="text"
+                formControlName="lastName"
+                class="form-control"
+                [ngClass]="{'is-invalid': submitted && userForm.get('lastName')?.errors}"
+              >
+              <div *ngIf="submitted && userForm.get('lastName')?.errors" class="invalid-feedback">
+                <div *ngIf="userForm.get('lastName')?.errors?.['required']">Last Name is required</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="mb-3">
+            <label class="form-label">Email Address</label>
+            <input
+              type="email"
+              formControlName="email"
+              class="form-control"
+              [ngClass]="{'is-invalid': submitted && userForm.get('email')?.errors}"
+            >
+            <div *ngIf="submitted && userForm.get('email')?.errors" class="invalid-feedback">
+              <div *ngIf="userForm.get('email')?.errors?.['required']">Email is required</div>
+              <div *ngIf="userForm.get('email')?.errors?.['email']">Invalid email format</div>
+            </div>
+          </div>
+
+          <!-- Password (Only for New Users) -->
+          <div class="mb-3" *ngIf="!isEditing">
+            <label class="form-label">Password</label>
+            <input
+              type="password"
+              formControlName="password"
+              class="form-control"
+              [ngClass]="{'is-invalid': submitted && userForm.get('password')?.errors}"
+            >
+            <div *ngIf="submitted && userForm.get('password')?.errors" class="invalid-feedback">
+              <div *ngIf="userForm.get('password')?.errors?.['required']">Password is required</div>
+              <div *ngIf="userForm.get('password')?.errors?.['minlength']">Password must be at least 10 characters</div>
+              <div *ngIf="userForm.get('password')?.errors?.['pattern']">
+                Password must contain uppercase, lowercase, number, and special character
+              </div>
+            </div>
+          </div>
+
+          <!-- Error Message -->
+          <div *ngIf="errorMessage" class="alert alert-danger">
+            <i class="fas fa-exclamation-circle"></i> {{ errorMessage }}
+          </div>
+
+          <!-- Modal Footer -->
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              (click)="closeModal()"
+            >
+              <i class="fas fa-times"></i> Cancel
+            </button>
+            <button
+              type="submit"
+              class="btn btn-primary"
+              [disabled]="userForm.invalid"
+            >
+              <i class="fas fa-save"></i>
+              {{ isEditing ? 'Update User' : 'Add User' }}
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Backdrop -->
+<div
+  class="modal-backdrop fade"
+  [class.show]="isModalOpen"
+  [style.display]="isModalOpen ? 'block' : 'none'"
+></div>

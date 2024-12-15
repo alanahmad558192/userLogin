@@ -20,8 +20,13 @@ import { AuthService } from '../app/services/auth.service';
   `,
   styles: [`
     .navbar {
+      top: 0;
+      width: 100%;
+      z-index: 1000;
       padding: 1rem;
       margin-bottom: 0rem;
+      background-color: #fff !important;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
   `]
 })
